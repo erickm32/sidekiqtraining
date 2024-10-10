@@ -18,4 +18,9 @@ Rails.application.routes.draw do
   get "other/job_done"
 
   resources :events, :categories
+
+  namespace "api" do
+    resources :events
+    resources :categories
+  end
 end
