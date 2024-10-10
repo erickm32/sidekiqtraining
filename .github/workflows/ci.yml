@@ -75,6 +75,9 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      - name: Init postgreSQL
+        run: sudo systemctl start postgresql.service
+
       - name: Run tests
         env:
           RAILS_ENV: test
