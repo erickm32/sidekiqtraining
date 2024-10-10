@@ -4,8 +4,9 @@ source "https://rubygems.org"
 gem "rails", "~> 7.2.1"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
-# Use sqlite3 as the database for Active Record
-gem "sqlite3", ">= 1.4"
+
+gem "pg", "~> 1.5.8"
+
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
@@ -34,15 +35,21 @@ gem "bootsnap", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
+gem 'redis', '~> 5.3.0'
+gem 'sidekiq', '~> 7.3.2'
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+  # gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+  gem 'byebug'
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem "factory_bot", "~> 6.5"
 end
 
 group :development do
@@ -50,11 +57,13 @@ group :development do
   gem "web-console"
 
   # Highlight the fine-grained location where an error occurred [https://github.com/ruby/error_highlight]
-  gem "error_highlight", ">= 0.4.0", platforms: [:ruby]
+  gem "error_highlight", ">= 0.4.0", platforms: [ :ruby ]
 end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  gem "rspec"
+  gem "rspec-rails"
 end
