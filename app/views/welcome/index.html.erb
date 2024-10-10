@@ -1,0 +1,9 @@
+<%# inside app/views/welcome/index.html.erb %>
+<h1>This is h1 title</h1>
+
+<%= form_with url: welcome_trigger_job_path do |f| %>
+ <%= f.submit 'Launch job' %>
+<% end %>
+
+<%= link_to 'Events', events_path %>
+<%= link_to 'Categories', categories_path %>
