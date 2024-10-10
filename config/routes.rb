@@ -17,4 +17,5 @@ Rails.application.routes.draw do
   # where visitor are redirected once job has been called
   get "other/job_done"
 
+  resources :events, :categories
 end
