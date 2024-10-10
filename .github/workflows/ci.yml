@@ -70,7 +70,7 @@ jobs:
         image: postgres
         # Provide the password for postgres
         env:
-          # POSTGRES_USER: postgres
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         # Set health checks to wait until postgres has started
         options: >-
@@ -97,7 +97,7 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
-          # POSTGRES_USERNAME: postgres
+          POSTGRES_USERNAME: postgres
           POSTGRES_PASSWORD: postgres
           # The hostname used to communicate with the PostgreSQL service container
           POSTGRES_HOST: localhost
