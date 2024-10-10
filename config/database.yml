@@ -10,6 +10,7 @@ default: &default
   timeout: 5000
   username: <%= ENV["POSTGRES_USERNAME"] %>
   password: <%= ENV["POSTGRES_PASSWORD"] %>
+  host: <%= ENV["POSTGRES_HOST"] %>
 
 development:
   <<: *default
