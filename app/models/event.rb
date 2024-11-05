@@ -4,6 +4,6 @@ class Event < ApplicationRecord
   validates :name, presence: true
 
   def self.permitted_attributes
-    [ :name, :category_id ]
+    [ :name, :category_id, :timestamp, :observation ]
   end
 end
