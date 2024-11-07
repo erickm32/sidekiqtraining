@@ -121,8 +121,20 @@ RSpec.describe "Categories", type: :request do
       end
     end
 
+    context 'with events associated' do
+      let(:category) { create(:category) }
+      let!(:event) { create(:event, category: category) }
+
+      it 'returns an error' do
+        expect do
+          delete api_category_path(category.id)
+        end.to change(Category, :count).by(0)
+        expect(JSON.parse(response.body)).to eq({ 'base' => [ "Cannot delete record because dependent events exist" ] })
+      end
+    end
+
     context 'with invalid params' do
-      it 'raise an error' do
+      it 'raises an error' do
         delete api_category_path(999)
         expect(JSON.parse(response.body)).to eq({ "error"=>"Couldn't find Category with 'id'=999" })
         expect(response.status).to eq(404)
