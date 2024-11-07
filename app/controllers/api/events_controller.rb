@@ -4,6 +4,9 @@ class Api::EventsController < Api::BaseController
   end
 
   def show
+    render json: Event.find(params["id"])
+  rescue ActiveRecord::RecordNotFound => e
+    render json: { error: e.message }, status: :not_found
   end
 
   def create
@@ -13,6 +16,26 @@ class Api::EventsController < Api::BaseController
     else
       render json: event.errors, status: :unprocessable_entity
     end
+  end
+
+  def update
+    event = Event.find(params["id"])
+    if event.update(event_params)
+      render json: event
+    else
+      render json: event.errors, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    event = Event.find(params["id"])
+    if event.destroy
+      render json: event
+    else
+      render json: event.errors, status: :unprocessable_entity
+    end
+  rescue ActiveRecord::RecordNotFound => e
+    render json: { error: e.message }, status: :not_found
   end
 
   private

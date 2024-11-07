@@ -13,18 +13,32 @@ RSpec.describe "Events", type: :request do
       end
     end
     context 'when there are no events' do
-      it 'returns something' do
+      it 'returns an empty array' do
         get api_events_path
         expect(JSON.parse(response.body)).to eq([])
       end
     end
   end
+
   describe "GET /api/events/:id" do
+    context 'when there is an event with the id' do
+      let(:event) { create(:event) }
+
+      it 'returns the event as json' do
+        get api_event_path(event)
+        expect(JSON.parse(response.body)).to eq(event.as_json)
+      end
+    end
+
+    context 'when the event id is invalid' do
+      it 'returns an error' do
+        get api_event_path(999)
+        expect(JSON.parse(response.body)).to eq({ "error"=>"Couldn't find Event with 'id'=999" })
+        expect(response.status).to eq(404)
+      end
+    end
   end
-  # describe "GET /index/new" do
-  # end
-  # describe "GET /index/edit" do
-  # end
+
   describe "POST /api/events" do
     context 'with correct params' do
       let(:category) { create(:category) }
@@ -46,10 +60,84 @@ RSpec.describe "Events", type: :request do
       end
     end
   end
+
   describe "PATCH /api/events/:id" do
+    context 'with valid params' do
+      let(:event) { create(:event) }
+
+      it 'updates the record' do
+        patch api_event_path(event.id), params: { event: event_params.merge({ observation: 'new observation' }) }
+        expect(response.status).to eq(200)
+        event.reload
+        expect(event.observation).to eq('new observation')
+      end
+    end
+
+    context 'with invalid params' do
+      let(:event) { create(:event) }
+
+      it 'fails to update the record' do
+        patch api_event_path(event.id), params: { event: event_params.merge({ observation: 'new observation', category_id: 999 }) }
+        expect(response.status).to eq(422)
+        expect(JSON.parse(response.body)).to eq({ "category"=>[ "must exist" ] })
+        event.reload
+        expect(event.observation).not_to eq('new observation')
+      end
+    end
   end
+
   describe "PUT /api/events/:id" do
+    context 'with valid params' do
+      let(:event) { create(:event) }
+
+      it 'updates the record' do
+        put api_event_path(event.id), params: { event: { observation: 'new observation' } }
+        expect(response.status).to eq(200)
+        event.reload
+        expect(event.observation).to eq('new observation')
+      end
+    end
+
+    context 'with invalid params' do
+      let(:event) { create(:event) }
+
+      it 'fails to update the record' do
+        put api_event_path(event.id), params: { event: { observation: 'new observation', category_id: 999 } }
+        expect(response.status).to eq(422)
+        expect(JSON.parse(response.body)).to eq({ "category"=>[ "must exist" ] })
+        event.reload
+        expect(event.observation).not_to eq('new observation')
+      end
+    end
   end
+
   describe "DELETE /api/events/:id" do
+    context 'with correct params' do
+      let!(:event) { create(:event) }
+
+      it 'deletes successfully' do
+        expect do
+          delete api_event_path(event.id)
+        end.to change(Event, :count).by(-1)
+        expect(JSON.parse(response.body)).to eq(event.as_json)
+      end
+    end
+
+    context 'with invalid params' do
+      it 'raise an error' do
+        delete api_event_path(999)
+        expect(JSON.parse(response.body)).to eq({ "error"=>"Couldn't find Event with 'id'=999" })
+        expect(response.status).to eq(404)
+      end
+    end
+  end
+
+  def event_params
+    {
+      category_id: Category.last.id || create(:category).id,
+      name: 'Test name',
+      observation: 'obs',
+      timestamp: Time.now
+    }
   end
 end
