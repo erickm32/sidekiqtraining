@@ -33,7 +33,7 @@ RSpec.describe "Events", type: :request do
     context 'when the event id is invalid' do
       it 'returns an error' do
         get api_event_path(999)
-        expect(JSON.parse(response.body)).to eq({ "error"=>"Couldn't find Event with 'id'=999" })
+        expect(JSON.parse(response.body)).to eq({ "error"=>"Couldn't find Event with 'id'=\"999\"" })
         expect(response.status).to eq(404)
       end
     end
@@ -43,11 +43,23 @@ RSpec.describe "Events", type: :request do
     context 'with correct params' do
       let(:category) { create(:category) }
 
-      it 'creates a new event' do
+      it 'creates a new event and returns 201' do
         expect do
           post api_events_path, params: { event: { name: 'New Event', category_id: category.id } }
         end.to change(Event, :count).by(1)
+        expect(response.status).to eq(201)
         expect(JSON.parse(response.body)).to eq(Event.last.as_json)
+      end
+
+      it 'creates the event with pending status' do
+        post api_events_path, params: { event: { name: 'New Event', category_id: category.id } }
+        expect(Event.last.status).to eq('pending')
+      end
+
+      it 'enqueues EventProcessorJob' do
+        expect do
+          post api_events_path, params: { event: { name: 'New Event', category_id: category.id } }
+        end.to have_enqueued_job(EventProcessorJob)
       end
     end
 
@@ -126,7 +138,7 @@ RSpec.describe "Events", type: :request do
     context 'with invalid params' do
       it 'raise an error' do
         delete api_event_path(999)
-        expect(JSON.parse(response.body)).to eq({ "error"=>"Couldn't find Event with 'id'=999" })
+        expect(JSON.parse(response.body)).to eq({ "error"=>"Couldn't find Event with 'id'=\"999\"" })
         expect(response.status).to eq(404)
       end
     end
