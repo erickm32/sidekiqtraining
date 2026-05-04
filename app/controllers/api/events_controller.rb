@@ -12,7 +12,8 @@ class Api::EventsController < Api::BaseController
   def create
     event = Event.new(event_params)
     if event.save
-      render json: event
+      EventProcessorJob.perform_later(event.id)
+      render json: event, status: :created
     else
       render json: event.errors, status: :unprocessable_entity
     end

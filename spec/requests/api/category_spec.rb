@@ -33,7 +33,7 @@ RSpec.describe "Categories", type: :request do
     context 'when the category id is invalid' do
       it 'returns an error' do
         get api_category_path(999)
-        expect(JSON.parse(response.body)).to eq({ "error"=>"Couldn't find Category with 'id'=999" })
+        expect(JSON.parse(response.body)).to eq({ "error"=>"Couldn't find Category with 'id'=\"999\"" })
         expect(response.status).to eq(404)
       end
     end
@@ -136,7 +136,7 @@ RSpec.describe "Categories", type: :request do
     context 'with invalid params' do
       it 'raises an error' do
         delete api_category_path(999)
-        expect(JSON.parse(response.body)).to eq({ "error"=>"Couldn't find Category with 'id'=999" })
+        expect(JSON.parse(response.body)).to eq({ "error"=>"Couldn't find Category with 'id'=\"999\"" })
         expect(response.status).to eq(404)
       end
     end
