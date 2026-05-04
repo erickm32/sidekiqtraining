@@ -83,7 +83,7 @@ GEM
     bindex (0.8.1)
     bootsnap (1.24.1)
       msgpack (~> 1.2)
-    brakeman (6.2.2)
+    brakeman (7.0.0)
       racc
     builder (3.3.0)
     byebug (13.0.0)
@@ -366,7 +366,7 @@ PLATFORMS
 
 DEPENDENCIES
   bootsnap
-  brakeman (~> 6.2.2)
+  brakeman (~> 7.0.0)
   byebug
   capybara
   error_highlight (>= 0.4.0)
